@@ -1,0 +1,58 @@
+#logo_nav{
+    border-radius: 60%
+}
+
+body{
+    padding-top: 70px;
+    margin-bottom: 70px;
+    background-color: black;
+    color: white;
+    font-family: 'Varela Round', sans-serif;
+    font-size: 12;
+			}
+            
+footer{
+    position: fixed;
+    bottom: 0px;
+    padding: 10px;
+    background-color: #eeeeee;
+    color: black;
+    width: 100%;
+    margin-left: -15px;
+			}
+
+
+#blog_img{
+    padding-bottom: 50px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+#ueber_mich{
+				padding-bottom: 50px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 40%;
+                border-radius: 60%;
+			}
+            
+#title{
+    text-decoration: underline;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 40px;
+            }
+
+#lead{
+    text-align: center;
+    padding-bottom: 20px;
+            }
+
+.card-body{
+    
+    background-color: dimgrey;
+    color:white;
+}

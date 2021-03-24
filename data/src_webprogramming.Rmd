@@ -1,0 +1,88 @@
+---
+title: "webprogrammierung_fs20"
+author: "Yanik Kipfer"
+date: "6/30/2020"
+output: html_document
+---
+
+```{r}
+library(readxl)
+library(dplyr)
+
+df <- read_xlsx("globalterrorismdb_0919dist.xlsx")
+
+# Attack type
+weapons <- df %>% 
+  filter(iyear >= 2001) %>%
+  group_by(attacktype1_txt) %>% 
+  count(sort = T) %>%
+  rename(count = n,
+         type = attacktype1_txt) %>% 
+  ungroup()
+
+write.csv(weapons,"attacktype.csv",row.names = F)
+
+# Target subtype
+trgt <- df %>% 
+  filter(iyear >= 2001) %>%
+  group_by(targtype1_txt) %>% 
+  count(sort = T) %>% 
+  na.omit() %>% 
+  rename(count = n,
+         target = targtype1_txt) %>% 
+  ungroup()
+
+write.csv(trgt,"target_type.csv", row.names = F)
+
+# number of casualties per country (as map)
+kill <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(country_txt,nkill) %>% 
+  group_by(country_txt) %>% 
+  summarise(casualties = sum(nkill, na.rm = T)) %>% 
+  arrange(desc(casualties)) %>% 
+  rename(country = country_txt) %>% 
+  ungroup()
+
+write.csv(kill,"casualties_country.csv",row.names = F)
+
+# group caused most casualties barplot
+kill_group <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(gname,nkill) %>% 
+  group_by(gname) %>% 
+  summarise(casualties = sum(nkill, na.rm = T)) %>% 
+  arrange(desc(casualties) )%>% 
+  ungroup() %>%
+  filter(gname != "Unknown") %>% 
+  rename(group = gname) %>%
+  top_n(10,casualties)
+
+write.csv(kill_group,"casualties_group.csv",row.names = F)
+
+
+# number of attacks per year (line plot)
+year_attacks <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(iyear) %>%
+  group_by(iyear) %>% 
+  count() %>% 
+  ungroup() %>% 
+  rename(attacks = n,
+         year = iyear)
+
+# kills per year together with number of attacks per year
+year_kill <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(iyear,nkill) %>% 
+  group_by(iyear) %>% 
+  summarise(casualties = sum(nkill,na.rm = T)) %>% 
+  ungroup() %>% 
+  rename(year = iyear)
+
+year_attacks_casualties <- merge(year_attacks,year_kill, by = "year")
+
+write.csv(year_attacks_casualties,"year_attacks_casualties.csv",row.names = F)
+  
+```
+

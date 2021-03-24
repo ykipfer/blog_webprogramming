@@ -1,0 +1,64 @@
+---
+title: "webprogrammierung_fs20"
+author: "Yanik Kipfer"
+date: "6/30/2020"
+output: html_document
+---
+
+```{r}
+library(readxl)
+library(dplyr)
+
+df <- read_xlsx("globalterrorismdb_0919dist.xlsx")
+
+# Attack type
+weapons <- df %>% 
+  filter(iyear >= 2001) %>%
+  group_by(attacktype1_txt) %>% 
+  count(sort = T)
+
+# Target subtype
+trgt <- df %>% 
+  filter(iyear >= 2001) %>%
+  group_by(targtype1_txt) %>% 
+  count(sort = T) %>% 
+  na.omit()
+
+# target type
+trgt_sub <- df %>%
+  filter(iyear >= 2001) %>% 
+  group_by(targsubtype1_txt) %>% 
+  count(sort = T) %>% 
+  na.omit()
+
+# number of casualties per country (as map)
+kill <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(country_txt,nkill) %>% 
+  group_by(country_txt) %>% 
+  summarise(total = sum(nkill, na.rm = T)) %>% 
+  arrange(desc(total))
+
+# group caused most casualties barplot
+kill_group <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(gname,nkill) %>% 
+  group_by(gname) %>% 
+  summarise(total = sum(nkill, na.rm = T)) %>% 
+  arrange(desc(total))
+
+# number of attacks per year (line plot)
+year_attacks <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(iyear) %>%
+  group_by(iyear) %>% 
+  count()
+
+# kills per year together with number of attacks per year
+year_kill <- df %>% 
+  filter(iyear >= 2001) %>% 
+  select(iyear,nkill) %>% 
+  group_by(iyear) %>% 
+  summarise(total = sum(nkill,na.rm = T))
+```
+
